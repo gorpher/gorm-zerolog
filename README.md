@@ -1,13 +1,14 @@
 # gorm-zerolog
-[![Build Status](https://travis-ci.org/Ahmet-Kaplan/gorm-zerolog.svg?branch=master)](https://travis-ci.org/Ahmet-Kaplan/gorm-zerolog)
-[![codecov](https://codecov.io/gh/Ahmet-Kaplan/gorm-zerolog/branch/master/graph/badge.svg)](https://codecov.io/gh/Ahmet-Kaplan/gorm-zerolog)
-[![GoDoc](https://godoc.org/github.com/Ahmet-Kaplan/gorm-zerolog?status.svg)](https://godoc.org/github.com/wantedly/gorm-zerolog)
-[![license](https://img.shields.io/github/license/Ahmet-Kaplan/gorm-zerolog.svg)](./LICENSE)
+
+[![Build Status](https://travis-ci.org/gorpher/gorm-zerolog.svg?branch=master)](https://travis-ci.org/gorpher/gorm-zerolog)
+[![codecov](https://codecov.io/gh/gorpher/gorm-zerolog/branch/master/graph/badge.svg)](https://codecov.io/gh/gorpher/gorm-zerolog)
+[![GoDoc](https://godoc.org/github.com/gorpher/gorm-zerolog?status.svg)](https://godoc.org/github.com/wantedly/gorm-zerolog)
+[![license](https://img.shields.io/github/license/gorpher/gorm-zerolog.svg)](./LICENSE)
 
 Alternative logging with [zerolog](https://github.com/rs/zerolog) for [GORM](http://jinzhu.me/gorm) ⚡️
 
-In comparison to gorm's default logger, `gorm-zerolog` is faster, reflection free, low allocations and no regex compilations.
-
+In comparison to gorm's default logger, `gorm-zerolog` is faster, reflection free, low allocations and no regex
+compilations.
 
 ## Example
 
@@ -16,7 +17,7 @@ package main
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/Ahmet-Kaplan/gorm-zerolog"
+	"github.com/gorpher/gorm-zerolog"
 )
 
 const (
@@ -34,7 +35,7 @@ func main() {
 		panic(err)
 	}
 	db.LogMode(true)
-	db.SetLogger(gorm-zerolog.New(logger))
+	db.SetLogger(gorm - zerolog.New(logger))
 
 	// ...
 }

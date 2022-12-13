@@ -1,7 +1,7 @@
 package gormzerolog_test
 
 import (
-	"github.com/mpalmer/gorm-zerolog"
+	"github.com/gorpher/gorm-zerolog"
 
 	"context"
 	"encoding/json"
@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"gorm.io/gorm"
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type MockWriter struct {
@@ -45,7 +45,7 @@ func Test_Logger_Sqlite(t *testing.T) {
 
 	now := time.Now()
 
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{NowFunc: func() time.Time { return now }, Logger: gormzerolog.Logger{}})
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{NowFunc: func() time.Time { return now }, Logger: gormzerolog.NewLoggerInterface(false)})
 
 	if err != nil {
 		panic(err)
@@ -65,11 +65,11 @@ func Test_Logger_Sqlite(t *testing.T) {
 		err_ok bool
 	}{
 		{
-			run:    func() error { return db.Create(&Post{Title: "awesome"}).Error },
-			sql:    fmt.Sprintf(
-				      "INSERT INTO `posts` (`title`,`body`,`created_at`) VALUES (%q,%q,%q)",
-					  "awesome", "", now.Format("2006-01-02 15:04:05.000"),
-			        ),
+			run: func() error { return db.Create(&Post{Title: "awesome"}).Error },
+			sql: fmt.Sprintf(
+				"INSERT INTO `posts` (`title`,`body`,`created_at`) VALUES (%q,%q,%q)",
+				"awesome", "", now.Format("2006-01-02 15:04:05.000"),
+			),
 			err_ok: false,
 		},
 		{
@@ -81,10 +81,10 @@ func Test_Logger_Sqlite(t *testing.T) {
 			run: func() error {
 				return db.Where(&Post{Title: "awesome", Body: "This is awesome post !"}).First(&Post{}).Error
 			},
-			sql:    fmt.Sprintf(
-				      "SELECT * FROM `posts` WHERE `posts`.`title` = %q AND `posts`.`body` = %q ORDER BY `posts`.`title` LIMIT 1",
-				      "awesome", "This is awesome post !",
-			        ),
+			sql: fmt.Sprintf(
+				"SELECT * FROM `posts` WHERE `posts`.`title` = %q AND `posts`.`body` = %q ORDER BY `posts`.`title` LIMIT 1",
+				"awesome", "This is awesome post !",
+			),
 			err_ok: true,
 		},
 		{
@@ -107,7 +107,7 @@ func Test_Logger_Sqlite(t *testing.T) {
 		entries := mogger.Entries
 
 		if got, want := len(entries), 1; got != want {
-			t.Errorf("Logger logged %d items, want %d items", got, want)
+			t.Errorf("gormLogger logged %d items, want %d items", got, want)
 		} else {
 			fieldByName := entries[0]
 
