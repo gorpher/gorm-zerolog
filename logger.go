@@ -3,7 +3,6 @@ package gormzerolog
 import (
 	"context"
 	"fmt"
-	"gorm.io/gorm/utils"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -93,7 +92,6 @@ func (l gormLogger) Trace(ctx context.Context, begin time.Time, f func() (string
 	if l.slowThreshold > 0 && elapsed > l.slowThreshold {
 		event.Str("slowLog", fmt.Sprintf("SLOW SQL >= %v", l.slowThreshold))
 	}
-	event.Str("line", utils.FileWithLineNum())
 	event.Send()
 
 	return
