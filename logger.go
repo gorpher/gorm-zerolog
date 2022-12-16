@@ -31,6 +31,13 @@ type gormLogger struct {
 	skipFrameCount int
 }
 
+type gormZeroLogSilentKey struct {
+}
+
+func WithContextSilent() context.Context {
+	return context.WithValue(context.Background(), gormZeroLogSilentKey{}, true)
+}
+
 func (l gormLogger) LogMode(level logger.LogLevel) logger.Interface {
 	return l
 }
@@ -50,10 +57,12 @@ func (l gormLogger) Info(ctx context.Context, msg string, opts ...interface{}) {
 func (l gormLogger) Trace(ctx context.Context, begin time.Time, f func() (string, int64), err error) {
 	zl := zerolog.Ctx(ctx)
 	var event *zerolog.Event
-	if l.isDebug {
-		event = zl.Debug()
-	} else {
-		event = zl.Trace()
+	if silent, ok := ctx.Value(gormZeroLogSilentKey{}).(bool); !ok || !silent {
+		if l.isDebug {
+			event = zl.Debug()
+		} else {
+			event = zl.Trace()
+		}
 	}
 	var durKey string
 
@@ -79,7 +88,7 @@ func (l gormLogger) Trace(ctx context.Context, begin time.Time, f func() (string
 		return
 	}
 	event.Dur(durKey, elapsed)
-	if l.skipFrameCount != 0 {
+	if l.skipFrameCount > 0 {
 		event.CallerSkipFrame(zerolog.CallerSkipFrameCount + l.skipFrameCount)
 	}
 	if sql != "" {
